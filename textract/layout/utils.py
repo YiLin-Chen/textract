@@ -47,3 +47,10 @@ class BBox(object):
 
     def get_coords(self):
         return self._coords
+
+    # axis = 0 (x-axis), 1 (y-axis)
+    def is_overlap(self, bbox, axis=0):
+        coords = bbox.get_coords()
+
+        return True if max(0, min(self._coords[2+axis], coords[2+axis]) - max(self._coords[0+axis], coords[0+axis])) else False
+

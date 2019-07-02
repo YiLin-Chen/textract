@@ -230,7 +230,7 @@ class LayoutAnalyzer(object):
             for j in range(i+1, len(bboxes_sorty)):
                 bbox2 = bboxes_sorty[j]
 
-                if self._find_overlap(bbox1, bbox2) and not graph.check_cyclic(bbox1.get_id(), bbox2.get_id()):
+                if bbox1.is_overlap(bbox2) and not graph.check_cyclic(bbox1.get_id(), bbox2.get_id()):
                     graph.add_edge(bbox1.get_id(), bbox2.get_id())
 
         # sort by (x, y) coordinate (left right -> top down)
@@ -243,10 +243,10 @@ class LayoutAnalyzer(object):
             for j in range(i+1, len(bboxes_sortx)):
                 bbox2 = bboxes_sortx[j]
 
-                if not self._find_overlap(bbox1, bbox2):
+                if not bbox1.is_overlap(bbox2):
                     is_neighbor = True
                     for k in range(min(lookup_table[bbox1.get_id()], lookup_table[bbox2.get_id()]), max(lookup_table[bbox1.get_id()], lookup_table[bbox2.get_id()])):
-                        if self._find_overlap(bbox1, bboxes_sorty[k]) and self._find_overlap(bbox2, bboxes_sorty[k]):
+                        if bbox1.is_overlap(bboxes_sorty[k]) and bbox2.is_overlap(bboxes_sorty[k]):
                             is_neighbor = False
                             break
 
