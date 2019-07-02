@@ -1,3 +1,12 @@
+'''
+util.py is the module that defines several basic unit for analyzing layout.
+1. Page: a page of a document
+2. Paragraph: text paragram in a page
+3. Line: text line in a paragraph
+4. Image: image block in a page
+5. BBox: bounding box
+'''
+
 from enum import Enum
 
 class LayoutType(Enum):
