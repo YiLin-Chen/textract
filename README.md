@@ -18,14 +18,14 @@ Furthermore, this package also provides other deep learning model, CRNN, for the
 ### Dependencies 
 You can install all python dependencies by both Anaconda or pip.
 ```
-> conda env create -f env.yml
+> conda env create -f cond_env.yml
 ```
 This will create an Anaconda environment **textract**.
 
 or
 
 ```
-> pip3 install -r requirement.txt
+> pip3 install -r requirements.txt
 ```
 
 ### download pretrained model
