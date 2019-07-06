@@ -21,7 +21,9 @@ You can install all python dependencies by both Anaconda or pip.
 > conda env create -f env.yml
 ```
 This will create an Anaconda environment **textract**.
+
 or
+
 ```
 > pip3 install -r requirement.txt
 ```
@@ -34,6 +36,8 @@ Please follow the instructions in [Google Vision API How-to Guild](https://cloud
 ```
 > export GOOGLE_APPLICATION_CREDENTIALS = ~/path/to/your/service_account_key.json
 ```
+
+For more detail, you can watch this youtube video, [Setting up API and Vision Intro - Google Cloud Python Tutorials p.2](https://www.youtube.com/watch?v=nMY0qDg16y4)
 
 ## Quick Start
 You can test a single image easily by execute the below command in the terminal. The output text file will be generated in the output folder.
