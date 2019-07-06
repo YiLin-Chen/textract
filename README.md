@@ -18,7 +18,7 @@ Furthermore, this package also provides other deep learning model, CRNN, for the
 ### Dependencies 
 You can install all python dependencies by both Anaconda or pip.
 ```
-> conda env create -f cond_env.yml
+> conda env create -f conda_env.yml
 ```
 This will create an Anaconda environment **textract**.
 
@@ -31,6 +31,8 @@ or
 ### download pretrained model
 Please download the [pretrain weights](https://drive.google.com/file/d/1rUiaZJv6XgxCapS3LqgLoax_fW77tpha/view?usp=sharing) and the [model](https://drive.google.com/file/d/1jbh1Oc-uh7TvAIWo121IdbzGRn2yEB75/view?usp=sharing). Put both files in the `./textract/model`.
 
+![](./images/model_folder.png)
+
 ### Google OCR setting 
 Please follow the instructions in [Google Vision API How-to Guild](https://cloud.google.com/vision/docs/before-you-begin?authuser=1) to setup your Google API Services. Remember to download the service account key (.json file) and add it as an environment variable in your computer. 
 ```
@@ -40,27 +42,41 @@ Please follow the instructions in [Google Vision API How-to Guild](https://cloud
 For more detail, you can watch this youtube video, [Setting up API and Vision Intro - Google Cloud Python Tutorials p.2](https://www.youtube.com/watch?v=nMY0qDg16y4)
 
 ## Quick Start
-You can test a single image easily by execute the below command in the terminal. The output text file will be generated in the output folder.
+You can run a simple test easily by execute the below command in the terminal. The output text file will be generated into your output folder.
 ```
-> python app.py --img ./path/to/your/image_file
+> python app.py --img_dir ./path/to/image/folder --out_dir ./path/to/output/folder 
 ```
+For example, 
+```
+> python app.py --img_dir ./test/images --out_dir ./test/output
+```
+
+![](./images/test_images.png)
+
+Then, you will get your ocr text files in your output folder.
+
+![](./images/test_output.png)
 
 ## Evaluation
 If you want to do the similarity test for a batch images, you can utilize the `evaluate.py`. The image folder should be organized as below structure (but the folder name can be arbitrary).
 
-* your test file folder
-![](./images/test_folder.png)
+* your images folder
+![](./images/eva_images.png)
 
 * your groundtruth file folder
-![](./images/groundtruth_folder.png)
+![](./images/eva_groundtruth.png)
 
 Then, run the below command in your terminal.
 ```
 > python evaluation.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
 ```
+For example
+```
+> python evaluation.py --img_dir ./evaluate/images --gd_dir ./evaluate/groundtruth --out_dir ./evaluate/output
+```
 
 * the generated result folder
-![](./images/output_folder.png)
+![](./images/eva_output.png)
 
 
 ## Reference
