@@ -20,10 +20,10 @@ You can install all python dependencies by both Anaconda or pip.
 ```
 > conda env create -f conda_env.yml
 ```
+
 This will create an Anaconda environment **textract**.
 
 or
-
 ```
 > pip3 install -r requirements.txt
 ```
@@ -46,6 +46,7 @@ You can run a simple test easily by execute the below command in the terminal. T
 ```
 > python app.py --img_dir ./path/to/image/folder --out_dir ./path/to/output/folder 
 ```
+
 For example, 
 ```
 > python app.py --img_dir ./test/images --out_dir ./test/output
@@ -61,21 +62,25 @@ Then, you will get your ocr text files in your output folder.
 If you want to do the similarity test for a batch images, you can utilize the `evaluate.py`. The image folder should be organized as below structure (but the folder name can be arbitrary).
 
 * your images folder
+
 ![](./images/eva_images.png)
 
 * your groundtruth file folder
+
 ![](./images/eva_groundtruth.png)
 
 Then, run the below command in your terminal.
 ```
 > python evaluation.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
 ```
+
 For example
 ```
 > python evaluation.py --img_dir ./evaluate/images --gd_dir ./evaluate/groundtruth --out_dir ./evaluate/output
 ```
 
 * the generated result folder
+
 ![](./images/eva_output.png)
 
 
