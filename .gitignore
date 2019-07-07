@@ -1,0 +1,5 @@
+__pycache__/
+textract/layout/__pycache__/
+textract/model/__pycache__/
+textract/model/vgg/
+textract/model/vgg16.npy
