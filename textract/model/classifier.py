@@ -1,6 +1,5 @@
 '''
-classifier.py module is used for defining the model of text/non-text classifier in layout analysis
-currently the model is CNN(VGG16) with pretrained weight
+classifier.py module is used for defining the model of text/non-text classifier
 '''
 
 import tensorflow as tf
@@ -13,6 +12,12 @@ class ClassifierType(Enum):
 
 
 class BlockClassifier(object):
+    '''
+    this is a class that is used for classifying text/non-text block
+    currently, it supports
+        - CNN-VGG16 
+    '''
+
     def __init__(self, model_type = ClassifierType.CNN_VGG16):
         if model_type == ClassifierType.CNN_VGG16:
             self._model = VGG16('./textract/model/vgg/model.ckpt-19999')
@@ -24,13 +29,23 @@ class BlockClassifier(object):
             print('model type is not correct')
 
     def classify(self, block):
+        '''
+        Desc: classify a block is a text or non-text block
+
+        Args: 
+            - block (numpy.ndarray): an image
+
+        Returns:
+            - str, 'Text', 'Image'
+        '''
+
         return self._model.predict(block)
 
-    def get_type(self):
-        pass
-
-
 class VGG16(object):
+    '''
+    a class for CNN-VGG model which is implemented in tensorflow
+    '''
+
     def __init__(self, model_path):
         self._categories = {0:'Text', 1:'Image'}
         
