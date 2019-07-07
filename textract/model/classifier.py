@@ -4,7 +4,7 @@ classifier.py module is used for defining the model of text/non-text classifier
 
 import tensorflow as tf
 import numpy as np 
-import cv2
+import cv2, config
 from enum import Enum
 
 class ClassifierType(Enum):
@@ -20,7 +20,7 @@ class BlockClassifier(object):
 
     def __init__(self, model_type = ClassifierType.CNN_VGG16):
         if model_type == ClassifierType.CNN_VGG16:
-            self._model = VGG16('./textract/model/vgg/model.ckpt-19999')
+            self._model = VGG16(config.VGG_MODEL)
 
         # elif
         # other model in the future...
@@ -50,7 +50,7 @@ class VGG16(object):
         self._categories = {0:'Text', 1:'Image'}
         
         # pretrained model
-        self._data_dict = np.load('./textract/model/vgg16.npy', encoding='latin1').item()
+        self._data_dict = np.load(config.VGG_DATA_DICT, encoding='latin1').item()
 
         self._x = tf.placeholder(dtype=tf.float32, shape=[None, 224, 224, 3], name='input')
         self._keep_prob = tf.placeholder(tf.float32)

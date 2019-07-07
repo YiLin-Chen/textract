@@ -1,7 +1,7 @@
 '''
 this module is used for analyzing a layout structure of an article image.
 '''
-import cv2, argparse, os
+import cv2, argparse, os, config
 import numpy as np
 from pythonRLSA import rlsa
 from collections import defaultdict
@@ -167,8 +167,8 @@ class LayoutAnalyzer(object):
 
         # dilation
         img_rlsa = 255 - img_rlsa # invert color
-        kernel = np.ones((5,5), np.uint8)
-        dilate = cv2.dilate(img_rlsa, kernel, iterations=2)
+        kernel = np.ones(config.BOX_DILATE_KERNEL, np.uint8)
+        dilate = cv2.dilate(img_rlsa, kernel, iterations=config.BOX_DILATE_ITER)
 
         # find bbox
         bboxes = self._calculate_bbox(dilate)
@@ -214,8 +214,8 @@ class LayoutAnalyzer(object):
         img_pre = self._preprocess(img_src, inverse = True)
 
         # horizatidilation 
-        kernel = np.ones((1,20), np.uint8)
-        dilate = cv2.dilate(img_pre, kernel, iterations=3)
+        kernel = np.ones(LINE_DILATE_KERNEL, np.uint8)
+        dilate = cv2.dilate(img_pre, kernel, iterations=LINE_DILATE_ITER)
 
         # find contours and extract lines
         (contours, _) = cv2.findContours(dilate, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
