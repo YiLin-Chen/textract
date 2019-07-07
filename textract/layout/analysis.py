@@ -1,3 +1,6 @@
+'''
+this module is used for analyzing a layout structure of an article image.
+'''
 import cv2, argparse, os
 import numpy as np
 from pythonRLSA import rlsa
@@ -5,20 +8,57 @@ from collections import defaultdict
 from textract.layout.utils import LayoutType, Page, Paragraph, Image, Line, BBox
 from textract.model.classifier import BlockClassifier, ClassifierType
 
-
 class Graph(object):
+    '''
+    used for building a directed graph, each node is a paragraph and if node 'a' had an edge to node 'b',
+    it means that the reading order of paragraph 'a' should before paragraph 'b'
+    '''
+
     def __init__(self, vertex_num):
         # adjacency List
         self._graph = defaultdict(list)
         self._nodes = [i for i in range(vertex_num)]
 
     def add_edge(self, u, v):
+        '''
+        Desc: add an edge u -> v
+
+        Args:
+            - u (int): paragraph id
+            - v (int): paragraph id
+
+        Returns: None
+        '''
+
         self._graph[u].append(v) 
 
     def check_edge(self, u, v):
+        '''
+        Desc: check whether there is an edge u -> v
+        
+        Args:
+            - u (int): paragraph id
+            - v (int): paragraph id
+
+        Returns:
+            - boolean, True if the edge exists, otherwise, False
+        '''
+
         return v in self._graph[u]
 
     def _topological_sort(self, v, visited, stack): 
+        '''
+        Desc: dfs to get the topological sort
+
+        Args:
+            - v (int): current node id
+            - visited (dictionary): {id:boolean}, record a node has been visited or not
+            - stack (list): current sort result
+
+        Returns:
+            - None
+        '''
+
         visited[v] = True
 
         for i in self._graph[v]: 
@@ -28,6 +68,14 @@ class Graph(object):
         stack.insert(0,v)
 
     def check_cyclic(self, u, v):
+        '''
+        Desc: check if there is a cycle after edge u -> v is added into the graph
+
+        Args:
+            - u (int): node id
+            - v (int): node id
+        '''
+
         visited = set([u])
 
         # dfs check cyclic
@@ -48,6 +96,16 @@ class Graph(object):
         return False
  
     def topological_sort(self): 
+        '''
+        Desc: get the topological sort of the graph
+
+        Args:
+            - None
+
+        Returns:
+            - stack (list): a list of node id after sorting by topological method
+        '''
+
         visited = {}
         for i in self._nodes:
             visited[i] = False
@@ -62,39 +120,43 @@ class Graph(object):
 
 
 class LayoutAnalyzer(object):
+    '''
+    a class that is used for analyzing the layout
+    '''
+
     def __init__(self):
         self._classifier = BlockClassifier(ClassifierType.CNN_VGG16)
 
     def extract(self, layout):
+        '''
+        Desc: Extract the smaller layout components from a layout. For example,
+            - input a Page will extract Paragraphs
+            - input a Paragraph will extract Lines
+
+        Args:
+            - layout (LayoutUtils)
+
+        Returns:
+            - list of LayoutUtils
+        '''
+
         if layout.get_type() == LayoutType.Page:
             return self._extract_boxes(layout)
         
         elif layout.get_type() == LayoutType.Paragraph:
             return self._extract_lines(layout)
 
-    def _calculate_angle(self, src):
-        kernel = np.ones((3,5), np.uint8)
-        src = cv2.dilate(src.copy(), kernel, iterations=2)
-        (contours, _) = cv2.findContours(src.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
-            
-        total_angle = 0
-        total_area = 0
-            
-        for cnt in contours:
-            rect = cv2.minAreaRect(cnt)
-            p1, p2, angle = rect
-            w, h = p2
-            if angle < -45:
-                angle = 90+angle
-
-            total_angle += angle*w*h
-            total_area += w*h
-
-        avg_angle = total_angle/total_area
-
-        return avg_angle
-
     def _extract_boxes(self, layout):
+        '''
+        Desc: extract blocks in the layout, it could be a text block or an image block
+
+        Args:
+            - layout (LayoutUtils)
+
+        Returns:
+            - a list of Paragraph or Image (Block)
+        '''
+
         img_src = layout.get_src()
 
         # preprocess
@@ -136,6 +198,16 @@ class LayoutAnalyzer(object):
         return boxes
 
     def _extract_lines(self, layout):
+        '''
+        Desc: extract lines in the layout
+
+        Args:
+            - layout (LayoutUtils)
+
+        Returns:
+            - a list of Line
+        '''
+
         img_src = layout.get_src()
 
         # preprocess
@@ -145,7 +217,7 @@ class LayoutAnalyzer(object):
         kernel = np.ones((1,20), np.uint8)
         dilate = cv2.dilate(img_pre, kernel, iterations=3)
 
-        # find find contours
+        # find contours and extract lines
         (contours, _) = cv2.findContours(dilate, cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
 
         bboxes = self._calculate_bbox(dilate)
@@ -162,19 +234,40 @@ class LayoutAnalyzer(object):
         return lines
 
     def _preprocess(self, src, inverse = False):
+        '''
+        Desc: image preprocessing for grayscale and binarization
+
+        Args:
+            - src (numpy.ndaddray): image
+            - inverse (boolean): True(foreground: white, background: black), False(foreground: black, background: white)
+
+        Returns:
+            - src (numpy.ndaddray): image after preprocessing
+        '''
+
         # gray scale
-        src = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+        img_gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
         # clean the image using otsu method with the inversed binarized image
         if inverse:
-            _, src = cv2.threshold(src, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
+            _, img_thr = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 
         else:
-            _, src = cv2.threshold(src, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
+            _, img_thr = cv2.threshold(img_gray, 0, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
 
-        return src
+        return img_thr
 
     def _calculate_bbox(self, src):
+        '''
+        Desc: get the bounding box of interested region, Paragraph or Line (depend on the preprocessing)
+
+        Args:
+            - src (numpy.ndaddray): image after preprocessing
+           
+        Returns:
+            - bboxes (list of BBox)
+        '''
+
         img = src.copy()
         bboxes = []
 
@@ -207,13 +300,20 @@ class LayoutAnalyzer(object):
 
     def _build_graph(self, bboxes):
         '''
-        1. Line segment a comes before line segment b 
-            - if their ranges of x-coordinates overlap 
-        and - if line segment a is above line segment b on the page
+        Desc: construct the directed graph base on the below rule
+            1. Line segment a comes before line segment b 
+                - if their ranges of x-coordinates overlap 
+            and - if line segment a is above line segment b on the page
+            
+            2. Line segment a comes before line segment b 
+                - if a is entirely to the left of b
+            and - there does not exist a line segment c whose y-coordinates are between a and b and whose range of xcoordinates overlaps both a and b.
         
-        2. Line segment a comes before line segment b 
-            - if a is entirely to the left of b
-        and - there does not exist a line segment c whose y-coordinates are between a and b and whose range of xcoordinates overlaps both a and b.
+        Args:
+            - bboxes (List[BBox])
+        
+        Return:
+            - Graph
         '''
 
         graph = Graph(len(bboxes))
@@ -254,10 +354,3 @@ class LayoutAnalyzer(object):
                         graph.add_edge(bbox1.get_id(), bbox2.get_id())
 
         return graph
-
-    # axis = 0 (x-axis), 1 (y-axis)
-    def _find_overlap(self, bbox1, bbox2, axis=0):
-        coords_1 = bbox1.get_coords()
-        coords_2 = bbox2.get_coords()
-
-        return True if max(0, min(coords_1[2+axis], coords_2[2+axis]) - max(coords_1[0+axis], coords_2[0+axis])) else False
