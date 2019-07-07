@@ -71,12 +71,12 @@ If you want to do the similarity test for a batch images, you can utilize the `e
 
 Then, run the below command in your terminal.
 ```
-> python evaluation.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
+> python evaluate.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
 ```
 
 For example
 ```
-> python evaluation.py --img_dir ./evaluate/images --gd_dir ./evaluate/groundtruth --out_dir ./evaluate/output
+> python evaluate.py --img_dir ./evaluate/images --gd_dir ./evaluate/groundtruth --out_dir ./evaluate/output
 ```
 
 * the generated result folder

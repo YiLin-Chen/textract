@@ -3,7 +3,7 @@ do the similarity evaluation
 usage:
     > python evaluate.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
 '''
-import argparse, os, cv2, config
+import argparse, os, cv2
 from similarity.normalized_levenshtein import NormalizedLevenshtein
 from textract.extractor import TextExtractor
 
