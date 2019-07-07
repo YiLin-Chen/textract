@@ -20,13 +20,14 @@ You can install all python dependencies by both Anaconda or pip.
 ```
 > conda env create -f conda_env.yml
 ```
-
+(if you want to use tensorflow-gpu, please replace conda\_env.yml to conda\_env\_gpu.yml)
 This will create an Anaconda environment **textract**.
 
 or
 ```
 > pip3 install -r requirements.txt
 ```
+(if you want to use tensorflow-gpu, please replace requirements.txt to requiremetns\_gpu.txt)
 
 ### download pretrained model
 Please download the [pretrain weights](https://drive.google.com/file/d/1rUiaZJv6XgxCapS3LqgLoax_fW77tpha/view?usp=sharing) and the [model](https://drive.google.com/file/d/1jbh1Oc-uh7TvAIWo121IdbzGRn2yEB75/view?usp=sharing). Put both files in the `./textract/model`.
