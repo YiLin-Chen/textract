@@ -1,5 +1,5 @@
 '''
-evaluate the while pipeline
+do the similarity evaluation
 usage:
     > python evaluate.py --img_dir path/to/image/folder --gd_dir path/to/groundtruth/folder --out_dir path/to/output/folder
 '''
