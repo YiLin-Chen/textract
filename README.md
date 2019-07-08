@@ -25,7 +25,7 @@ This will create an Anaconda environment **textract**.
 
 or
 ```
-> pip3 install -r requirements.txt
+> pip install -r requirements.txt
 ```
 (if you want to use tensorflow-gpu, please replace requirements.txt to requiremetns\_gpu.txt)
 
