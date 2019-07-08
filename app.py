@@ -34,6 +34,6 @@ for file in image_folder:
     ocr_text = ''.join(extractor.extract(image))
 
     # write output txt file
-    output_file = open(os.path.join(output_path, file+'.txt'), 'w')
+    output_file = open(os.path.join(output_path, file+'.txt'), 'w', encoding='utf8')
     output_file.write(ocr_text)
     output_file.close()
