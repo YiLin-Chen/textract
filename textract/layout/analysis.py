@@ -272,6 +272,7 @@ class LayoutAnalyzer(object):
         bboxes = []
 
         # get bounding box and keep merging until no intersection
+        padding = 0
         while True:
             (img_contours, _) = cv2.findContours(img.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
             
@@ -284,12 +285,13 @@ class LayoutAnalyzer(object):
                 cv2.rectangle(mask, (x+1,y+1), (x+w-1,y+h-1), (255), -1)
 
             (mask_contours, _) = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,cv2.CHAIN_APPROX_SIMPLE)
+            padding += 1
 
             if len(img_contours) == len(mask_contours):
                 # no intersection
                 for i in range(len(mask_contours)):
                     x, y, w, h = cv2.boundingRect(mask_contours[i])
-                    bbox = BBox(i, x, y, w, h)
+                    bbox = BBox(i, x-padding, y-padding, w+padding, h+padding)
                     bboxes.append(bbox)
                 break
             else:
