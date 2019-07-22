@@ -75,25 +75,30 @@ class Graph(object):
             - u (int): node id
             - v (int): node id
         '''
-
-        visited = set([u])
+        visited = set()
 
         # dfs check cyclic
         stack = [v]
         while stack:
             node = stack.pop()
-            if node in visited:
+
+            if node == u:
                 return True
-            
-            if node not in self._graph:
-                return False
+
+            if node in visited:
+                continue
 
             visited.add(node)
 
-            for nei in self._graph[node]:
-                stack.append(nei)
+            if node not in self._graph:
+                continue
+
+            else:
+                for nei in self._graph[node]:
+                    stack.append(nei)
 
         return False
+
  
     def topological_sort(self): 
         '''
