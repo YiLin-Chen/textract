@@ -5,5 +5,5 @@ Pillow == 6.0.0
 pdf2image == 1.5.4
 numpy == 1.14.5
 pythonRLSA == 0.0.1
-tensorflow-gpu == 1.13.1
+tensorflow-gpu == 2.7.2
 strsim == 0.0.3
